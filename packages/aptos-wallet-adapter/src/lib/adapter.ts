@@ -204,7 +204,6 @@ export class MizuWallet implements AptosWallet {
       } else {
         await this.websiteHelper?.disconnect();
       }
-      this.provider = undefined;
     } catch (error: any) {
       throw error;
     }
