@@ -1,11 +1,9 @@
-import { InputGenerateTransactionPayloadData, Network } from '@aptos-labs/ts-sdk';
+import { InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
 import { Mizu } from '@mizuwallet-sdk/core';
 import Postmate from 'postmate';
 import { MizuSupportNetwork } from '../config';
 
 const PRO_ORIGIN = 'https://mizu.io';
-// TODO: deploy testnet only env
-const DEV_ORIGIN = 'https://dev.fuzzwallet.com:7654';
 
 const initStyles = () => {
   const style = document.createElement('style');
@@ -46,7 +44,7 @@ class WebsiteHelper {
     this.manifestURL = args.manifestURL;
     this.network = args.network;
     this.mizuClient = args.mizuClient;
-    this.origin = args.network === Network.MAINNET ? PRO_ORIGIN : DEV_ORIGIN;
+    this.origin = PRO_ORIGIN;
 
     initStyles();
   }
