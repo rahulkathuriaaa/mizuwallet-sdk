@@ -1,10 +1,11 @@
 /**
  * Check Page is Loaded in Telegram
  */
-export const IsTelegram = !!window?.TelegramWebviewProxy;
+export const IsTelegram = typeof window != 'undefined' && !!window?.TelegramWebviewProxy;
 
 /**
  * Check Page has Open Link
  */
-export const HasOpenLink = !!window?.Telegram?.WebApp?.openTelegramLink;
+export const HasOpenLink =
+  typeof window != 'undefined' && !!window?.Telegram?.WebApp?.openTelegramLink;
 
