@@ -1,5 +1,10 @@
-import { Account, AccountAuthenticator, Network, SigningScheme } from '@aptos-labs/ts-sdk';
-import { AnyRawTransaction } from '@aptos-labs/wallet-adapter-core';
+import {
+  Account,
+  AccountAuthenticator,
+  AnyRawTransaction,
+  Network,
+  SigningScheme,
+} from '@aptos-labs/ts-sdk';
 import {
   APTOS_CHAINS,
   AccountInfo,
