@@ -3,9 +3,8 @@ import { Mizu } from '@mizuwallet-sdk/core';
 import Postmate from 'postmate';
 import { MizuSupportNetwork } from '../config';
 
-// TODO: for test
-const PRO_ORIGIN = 'https://dev.fuzzwallet.com:7654';
-// const PRO_ORIGIN = 'https://mizu.io';
+// const PRO_ORIGIN = 'https://dev.fuzzwallet.com:7654';
+const PRO_ORIGIN = 'https://mizu.io';
 
 const initStyles = () => {
   const style = document.createElement('style');
@@ -143,7 +142,7 @@ class WebsiteHelper {
 
       if (!orderId) throw new Error('Transaction creation failed');
 
-      console.log('signAndSubmit')
+      console.log('signAndSubmit');
 
       /**
        * Init Postmate iframe
