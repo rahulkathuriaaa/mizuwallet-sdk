@@ -110,6 +110,8 @@ export const fetchOrderQuery = gql`
       updatedAt
       walletUserId
       applicationId
+      hash
+      type
       transactions {
         hash
         type
@@ -152,6 +154,8 @@ export const fetchOrderListQuery = gql`
       type
       updatedAt
       walletUserId
+      hash
+      gasFee
       transactions {
         hash
         gasFee
@@ -189,3 +193,4 @@ export const createOrderWithCodeMutation = gql`
     createOrderWithCode(appId: $appId, authCode: $authCode, payload: $payload)
   }
 `;
+
