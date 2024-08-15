@@ -3,7 +3,9 @@ import { Mizu } from '@mizuwallet-sdk/core';
 import Postmate from 'postmate';
 import { MizuSupportNetwork } from '../config';
 
-const PRO_ORIGIN = 'https://mizu.io';
+// TODO: for test
+const PRO_ORIGIN = 'https://dev.fuzzwallet.com:7654';
+// const PRO_ORIGIN = 'https://mizu.io';
 
 const initStyles = () => {
   const style = document.createElement('style');
@@ -141,6 +143,8 @@ class WebsiteHelper {
 
       if (!orderId) throw new Error('Transaction creation failed');
 
+      console.log('signAndSubmit')
+
       /**
        * Init Postmate iframe
        *
@@ -177,7 +181,8 @@ class WebsiteHelper {
           }
 
           resolve({
-            hash: data.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
+            // hash: data.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
+            hash: data.hash,
           });
         });
       });

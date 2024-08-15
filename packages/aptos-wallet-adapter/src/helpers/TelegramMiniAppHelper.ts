@@ -108,7 +108,8 @@ class TelegramMiniAppHelper {
       }
 
       return {
-        hash: result.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
+        // hash: result.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
+        hash: result.hash,
       };
     } else {
       throw new Error(`${MZ_MSG_TYPE.TRANSACTION} No address found`);
