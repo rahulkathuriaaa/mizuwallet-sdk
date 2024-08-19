@@ -1,7 +1,9 @@
 import { Network } from '@aptos-labs/ts-sdk';
 
 export const MINI_APP_URL = 'https://t.me/mizuwallet_bot/mizuwallet';
+
 export const DEV_MINI_APP_URL = 'https://t.me/mizuwallet_bot/mizuwallet_testnet';
+// export const DEV_MINI_APP_URL = 'https://t.me/mizuwallet_bot/mizuwallet_local_dev';
 export const DEFAULT_MINI_APP_URL = (network: MizuSupportNetwork) =>
   network === Network.TESTNET ? DEV_MINI_APP_URL : MINI_APP_URL;
 

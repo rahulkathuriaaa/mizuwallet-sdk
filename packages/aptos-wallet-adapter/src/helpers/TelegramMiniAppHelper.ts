@@ -1,10 +1,15 @@
-import { AccountAddress, InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
+import {
+  AccountAddress,
+  AnyRawTransaction,
+  InputGenerateTransactionPayloadData,
+} from '@aptos-labs/ts-sdk';
 import { SessionCrypto, SessionListener } from '@mizuwallet-sdk/protocol';
 import { DEFAULT_MINI_APP_URL, MizuSupportNetwork, MZ_MSG_TYPE } from '../config';
 import { HasOpenLink } from '../utils';
 import ActionHelper from '../utils/ActionHelper';
 
 const MZ_STORAGE_ADDRESS = 'mizuwallet-address';
+const MZ_STORAGE_PUBLICKEY = 'mizuwallet-publickey';
 
 class TelegramMiniAppHelper {
   /**
@@ -34,10 +39,14 @@ class TelegramMiniAppHelper {
    * @returns
    */
   async connect() {
-    if (window?.localStorage && window.localStorage?.getItem(MZ_STORAGE_ADDRESS)) {
+    if (
+      window?.localStorage &&
+      window.localStorage?.getItem(MZ_STORAGE_ADDRESS) &&
+      window.localStorage?.getItem(MZ_STORAGE_PUBLICKEY)
+    ) {
       return {
-        address: window.localStorage.getItem(MZ_STORAGE_ADDRESS)!.toString(),
-        publicKey: '',
+        address: window.localStorage.getItem(MZ_STORAGE_ADDRESS)?.toString() || '',
+        publicKey: window.localStorage.getItem(MZ_STORAGE_PUBLICKEY)?.toString() || '',
       };
     }
 
@@ -66,9 +75,10 @@ class TelegramMiniAppHelper {
       })
     ) {
       window.localStorage.setItem(MZ_STORAGE_ADDRESS, result?.address);
+      window.localStorage.setItem(MZ_STORAGE_PUBLICKEY, result?.publicKey);
       return {
         address: result?.address,
-        publicKey: '',
+        publicKey: result?.publicKey,
       };
     } else {
       throw new Error(`${MZ_MSG_TYPE.CONNECT} Error`);
@@ -78,6 +88,10 @@ class TelegramMiniAppHelper {
   disconnect() {
     if (window?.localStorage.getItem(MZ_STORAGE_ADDRESS)) {
       window?.localStorage.removeItem(MZ_STORAGE_ADDRESS);
+    }
+
+    if (window?.localStorage.getItem(MZ_STORAGE_PUBLICKEY)) {
+      window?.localStorage.removeItem(MZ_STORAGE_PUBLICKEY);
     }
   }
 
@@ -108,8 +122,75 @@ class TelegramMiniAppHelper {
       }
 
       return {
-        // hash: result.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
         hash: result.hash,
+      };
+    } else {
+      throw new Error(`${MZ_MSG_TYPE.TRANSACTION} No address found`);
+    }
+  }
+
+  async signTransaction(transaction: AnyRawTransaction) {
+    if (window?.localStorage.getItem(MZ_STORAGE_ADDRESS)) {
+      const sc = new SessionCrypto();
+      const startapp = ActionHelper.buildAction({
+        prefix: 'R_',
+        action: 'miniapp-signtransaction',
+        params: [sc.sessionId, this.manifestURL, transaction.bcsToHex().toStringWithoutPrefix()],
+      });
+
+      if (HasOpenLink) {
+        window?.Telegram?.WebApp?.openTelegramLink(
+          `${this.miniAppURL}?startapp=${startapp}`,
+          '_blank',
+        );
+      } else {
+        window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
+      }
+
+      const result: any = await SessionListener({
+        keypair: sc.stringifyKeypair(),
+      });
+
+      if (result.cancel) {
+        throw new Error('User Canceled');
+      }
+
+      return {
+        signature: result,
+      };
+    } else {
+      throw new Error(`${MZ_MSG_TYPE.TRANSACTION} No address found`);
+    }
+  }
+
+  async signMessage(args: { message: string; nonce: string }) {
+    if (window?.localStorage.getItem(MZ_STORAGE_ADDRESS)) {
+      const sc = new SessionCrypto();
+      const startapp = ActionHelper.buildAction({
+        prefix: 'R_',
+        action: 'miniapp-signmessage',
+        params: [sc.sessionId, this.manifestURL, window?.btoa(JSON.stringify(args))],
+      });
+
+      if (HasOpenLink) {
+        window?.Telegram?.WebApp?.openTelegramLink(
+          `${this.miniAppURL}?startapp=${startapp}`,
+          '_blank',
+        );
+      } else {
+        window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
+      }
+
+      const result: any = await SessionListener({
+        keypair: sc.stringifyKeypair(),
+      });
+
+      if (result.cancel) {
+        throw new Error('User Canceled');
+      }
+
+      return {
+        data: result,
       };
     } else {
       throw new Error(`${MZ_MSG_TYPE.TRANSACTION} No address found`);

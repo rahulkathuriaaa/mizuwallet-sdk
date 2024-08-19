@@ -51,6 +51,7 @@ export const UserWalletAddressQuery = gql`
     walletUserByPk(id: $id) {
       sub_wallets {
         address
+        publicKey
       }
       google_user {
         email
@@ -72,9 +73,37 @@ export const UserWalletAddressQuery = gql`
 /**
  * For creating order
  */
-export const createOrderQuery = gql`
+export const createOrderMutation = gql`
   mutation CreateOrderQuery($appId: String = "", $payload: String = "") {
     createOrder(appId: $appId, payload: $payload)
+  }
+`;
+
+/**
+ * For sign signature
+ */
+export const createSignatureMutation = gql`
+  mutation createSignatureMutation($appId: String = "", $transactionHex: String = "") {
+    createSignature(appId: $appId, transactionHex: $transactionHex)
+  }
+`;
+
+/**
+ * For sign message
+ */
+export const createSignMessageMutation = gql`
+  mutation createSignMessageMutation(
+    $appId: String = ""
+    $message: String = ""
+    $nonce: String = ""
+  ) {
+    createSignMessage(appId: $appId, nonce: $nonce, message: $message) {
+      fullMessage
+      message
+      nonce
+      prefix
+      signature
+    }
   }
 `;
 

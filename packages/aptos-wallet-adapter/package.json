@@ -1,7 +1,7 @@
 {
   "name": "@mizuwallet-sdk/aptos-wallet-adapter",
   "description": "Mizu Wallet Adapter for Aptos",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

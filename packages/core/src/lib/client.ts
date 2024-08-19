@@ -11,8 +11,10 @@ import {
   UserWalletAddressQuery,
   bindGoogleQuery,
   confirmOrderQuery,
-  createOrderQuery,
+  createOrderMutation,
   createOrderWithCodeMutation,
+  createSignMessageMutation,
+  createSignatureMutation,
   fetchOrderListQuery,
   fetchOrderQuery,
   simulateOrderQuery,
@@ -328,7 +330,6 @@ export class Mizu {
    * Create Order
    *
    * @param args.payload TransactionPayload
-   * @param args.opt.code
    * @returns
    */
   async createOrder(args: { payload: any }) {
@@ -337,7 +338,7 @@ export class Mizu {
 
     const result: any = await request({
       url: this.graphqlEndPoint,
-      document: createOrderQuery,
+      document: createOrderMutation,
       variables: {
         appId: this.appId,
         payload: window.btoa(JSON.stringify(transferPayloadToV2(args.payload))),
@@ -372,6 +373,57 @@ export class Mizu {
     });
 
     return result?.createOrderWithCode;
+  }
+
+  /**
+   * Create Signature
+   *
+   * @param args.transactionHex AnyRawTransaction.bscToHex().toStringWithoutPrefix()
+   * @returns
+   */
+  async createSignature(args: { transactionHex: any }) {
+    this.checkInitialized();
+    this.checkJWTToken();
+
+    const result: any = await request({
+      url: this.graphqlEndPoint,
+      document: createSignatureMutation,
+      variables: {
+        appId: this.appId,
+        transactionHex: args.transactionHex,
+      },
+      requestHeaders: {
+        Authorization: `Bearer ${this.jwtToken}`,
+      },
+    });
+
+    return result?.createSignature;
+  }
+
+  /**
+   * Sign Message
+   *
+   * @param args.message message to sign
+   * @param args.nonce nonce
+   * @returns
+   */
+  async signMessage(args: { message: string; nonce: string }) {
+    this.checkInitialized();
+    this.checkJWTToken();
+
+    const result: any = await request({
+      url: this.graphqlEndPoint,
+      document: createSignMessageMutation,
+      variables: {
+        appId: this.appId,
+        ...args,
+      },
+      requestHeaders: {
+        Authorization: `Bearer ${this.jwtToken}`,
+      },
+    });
+
+    return result?.createSignMessage;
   }
 
   /**

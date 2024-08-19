@@ -1,4 +1,4 @@
-import { InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
+import { AnyRawTransaction, InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
 import { Mizu } from '@mizuwallet-sdk/core';
 import Postmate from 'postmate';
 import { MizuSupportNetwork } from '../config';
@@ -142,8 +142,6 @@ class WebsiteHelper {
 
       if (!orderId) throw new Error('Transaction creation failed');
 
-      console.log('signAndSubmit');
-
       /**
        * Init Postmate iframe
        *
@@ -182,6 +180,101 @@ class WebsiteHelper {
           resolve({
             // hash: data.transactions?.filter((tx: any) => tx.type === 2)?.[0]?.hash || '',
             hash: data.hash,
+          });
+        });
+      });
+    } catch (error: any) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async signTransaction(transaction: AnyRawTransaction) {
+    try {
+      /**
+       * Init Postmate iframe
+       *
+       * Check if user is logged in first.
+       */
+      const handshake = await new Postmate({
+        container: document.body, // Element to inject frame into
+        url: `${this.origin}/wallet/checkLogin?redirect_url=${encodeURIComponent('/wallet/sign_transaction')}&network=${this.network}`,
+        name: 'mizu-wallet-login',
+        classListArray: ['mizu-wallet-frame', 'mizu-wallet-sign-frame'],
+        model: {
+          manifestURL: this.manifestURL,
+          network: this.network,
+          appId: this.mizuClient.appId,
+          transactionInfo: {
+            transaction: transaction.bcsToHex().toStringWithoutPrefix(),
+          },
+        },
+      });
+
+      handshake.on('close-frame', () => {
+        handshake.destroy();
+      });
+
+      handshake.on('cancel', () => {
+        throw new Error(`User Canceled`);
+      });
+
+      return new Promise<any>((resolve, reject) => {
+        handshake.on('sign_transaction', (data: any) => {
+          if (data.error) {
+            return reject(data.error);
+          }
+
+          resolve({
+            ...data.result,
+          });
+        });
+      });
+    } catch (error: any) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async signMessage(args: { message: string; nonce: string }) {
+    try {
+      /**
+       * Init Postmate iframe
+       *
+       * Check if user is logged in first.
+       */
+      const handshake = await new Postmate({
+        container: document.body, // Element to inject frame into
+        url: `${this.origin}/wallet/checkLogin?redirect_url=${encodeURIComponent('/wallet/sign_message')}&network=${this.network}`,
+        name: 'mizu-wallet-login',
+        classListArray: ['mizu-wallet-frame', 'mizu-wallet-sign-frame'],
+        model: {
+          manifestURL: this.manifestURL,
+          network: this.network,
+          appId: this.mizuClient.appId,
+          messageInfo: {
+            message: args.message,
+            nonce: args.nonce,
+          },
+        },
+      });
+
+      handshake.on('close-frame', () => {
+        handshake.destroy();
+      });
+
+      handshake.on('cancel', () => {
+        throw new Error(`User Canceled`);
+      });
+
+      return new Promise<any>((resolve, reject) => {
+        handshake.on('sign_message', (data: any) => {
+          if (data.error) {
+            return reject(data.error);
+          }
+
+          resolve({
+            ...data.result,
           });
         });
       });

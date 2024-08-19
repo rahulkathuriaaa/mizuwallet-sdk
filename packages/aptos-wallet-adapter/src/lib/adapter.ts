@@ -2,6 +2,7 @@ import {
   Account,
   AccountAuthenticator,
   AnyRawTransaction,
+  Deserializer,
   Network,
   SigningScheme,
 } from '@aptos-labs/ts-sdk';
@@ -32,6 +33,7 @@ import {
   UserResponseStatus,
 } from '@aptos-labs/wallet-standard';
 import { Mizu } from '@mizuwallet-sdk/core';
+import { Buffer } from 'buffer';
 import {
   DEFAULT_MIZUWALLET_ID,
   MZ_MSG_TYPE,
@@ -218,8 +220,27 @@ export class MizuWallet implements AptosWallet {
     transaction: AnyRawTransaction,
     asFeePayer?: boolean,
   ): Promise<UserResponse<AccountAuthenticator>> => {
-    console.log(transaction, asFeePayer);
-    throw new AptosWalletError(AptosWalletErrorCode.InternalError);
+    console.log(asFeePayer);
+    let response: any = {};
+    if (IsTelegram) {
+      response = await this.telegramMiniAppHelper?.signTransaction(transaction);
+    } else {
+      response = await this.websiteHelper?.signTransaction(transaction);
+    }
+
+    if (response.signature) {
+      const der = new Deserializer(Buffer.from(response.signature, 'hex'));
+      const authenticator: AccountAuthenticator = AccountAuthenticator.deserialize(der);
+
+      return {
+        args: authenticator,
+        status: UserResponseStatus.APPROVED,
+      };
+    } else {
+      return {
+        status: UserResponseStatus.REJECTED,
+      };
+    }
   };
 
   signAndSubmitTransaction: AptosSignAndSubmitTransactionMethod = async (
@@ -252,8 +273,39 @@ export class MizuWallet implements AptosWallet {
   signMessage: AptosSignMessageMethod = async (
     input: AptosSignMessageInput,
   ): Promise<UserResponse<AptosSignMessageOutput>> => {
-    console.log(input);
-    throw new AptosWalletError(AptosWalletErrorCode.InternalError);
+    try {
+      const { message, nonce, ...rest } = input;
+
+      let response: any = {};
+      if (IsTelegram) {
+        response = await this.telegramMiniAppHelper?.signMessage({
+          message,
+          nonce,
+        });
+      } else {
+        response = await this.websiteHelper?.signMessage({
+          message,
+          nonce,
+        });
+      }
+
+      if (response?.signature) {
+        return {
+          args: {
+            ...response,
+            ...rest,
+          },
+          status: UserResponseStatus.APPROVED,
+        };
+      } else {
+        return {
+          status: UserResponseStatus.REJECTED,
+        };
+      }
+    } catch (err: any) {
+      console.error(err.message || err);
+      throw new AptosWalletError(AptosWalletErrorCode.InternalError);
+    }
   };
 
   onAccountChange: AptosOnAccountChangeMethod = async (): Promise<void> => {
