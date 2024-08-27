@@ -274,7 +274,7 @@ class WebsiteHelper {
           }
 
           resolve({
-            ...data.result,
+            data: data.result,
           });
         });
       });
