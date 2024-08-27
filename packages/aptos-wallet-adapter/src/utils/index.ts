@@ -12,7 +12,8 @@ export const HasOpenLink =
 /**
  * Immigrated for telegram post event and open internal link
  */
-const isIframe = window?.parent != null && window != window?.parent;
+export const isIframe =
+  typeof window != 'undefined' && window?.parent != null && window != window?.parent;
 
 function postEvent(eventType: any, callback: any, eventData: any) {
   if (!callback) {
