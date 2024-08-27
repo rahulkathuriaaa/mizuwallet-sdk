@@ -15,6 +15,7 @@ export const MZ_MSG_TYPE = {
 export type MizuSupportNetwork = Extract<Network, Network.MAINNET | Network.TESTNET>;
 
 export const MIZU_WALLET_ID = '07418a1b-9574-4449-bd34-2146db60b05c';
+// TODO: update testnet production
 export const MIZU_WALLET_TESTNET_ID = '0c460c1a-5175-4383-b1c2-35b934f5aa71';
 export const DEFAULT_MIZUWALLET_ID = (network: MizuSupportNetwork) =>
   network === Network.TESTNET ? MIZU_WALLET_TESTNET_ID : MIZU_WALLET_ID;

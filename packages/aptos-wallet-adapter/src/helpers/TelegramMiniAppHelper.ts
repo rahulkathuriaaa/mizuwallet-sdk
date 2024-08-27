@@ -5,7 +5,7 @@ import {
 } from '@aptos-labs/ts-sdk';
 import { SessionCrypto, SessionListener } from '@mizuwallet-sdk/protocol';
 import { DEFAULT_MINI_APP_URL, MizuSupportNetwork, MZ_MSG_TYPE } from '../config';
-import { HasOpenLink } from '../utils';
+import { openTelegramLink } from '../utils';
 import ActionHelper from '../utils/ActionHelper';
 
 const MZ_STORAGE_ADDRESS = 'mizuwallet-address';
@@ -57,11 +57,7 @@ class TelegramMiniAppHelper {
       params: [sc.sessionId, this.manifestURL],
     });
 
-    if (HasOpenLink) {
-      window?.Telegram.WebApp.openTelegramLink(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
-    } else {
-      window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
-    }
+    openTelegramLink(`${this.miniAppURL}?startapp=${startapp}`);
 
     const result: any = await SessionListener({
       keypair: sc.stringifyKeypair(),
@@ -104,14 +100,7 @@ class TelegramMiniAppHelper {
         params: [sc.sessionId, this.manifestURL, window?.btoa(JSON.stringify(transaction))],
       });
 
-      if (HasOpenLink) {
-        window?.Telegram?.WebApp?.openTelegramLink(
-          `${this.miniAppURL}?startapp=${startapp}`,
-          '_blank',
-        );
-      } else {
-        window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
-      }
+      openTelegramLink(`${this.miniAppURL}?startapp=${startapp}`);
 
       const result: any = await SessionListener({
         keypair: sc.stringifyKeypair(),
@@ -138,14 +127,7 @@ class TelegramMiniAppHelper {
         params: [sc.sessionId, this.manifestURL, transaction.bcsToHex().toStringWithoutPrefix()],
       });
 
-      if (HasOpenLink) {
-        window?.Telegram?.WebApp?.openTelegramLink(
-          `${this.miniAppURL}?startapp=${startapp}`,
-          '_blank',
-        );
-      } else {
-        window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
-      }
+      openTelegramLink(`${this.miniAppURL}?startapp=${startapp}`);
 
       const result: any = await SessionListener({
         keypair: sc.stringifyKeypair(),
@@ -172,14 +154,7 @@ class TelegramMiniAppHelper {
         params: [sc.sessionId, this.manifestURL, window?.btoa(JSON.stringify(args))],
       });
 
-      if (HasOpenLink) {
-        window?.Telegram?.WebApp?.openTelegramLink(
-          `${this.miniAppURL}?startapp=${startapp}`,
-          '_blank',
-        );
-      } else {
-        window?.open(`${this.miniAppURL}?startapp=${startapp}`, '_blank');
-      }
+      openTelegramLink(`${this.miniAppURL}?startapp=${startapp}`);
 
       const result: any = await SessionListener({
         keypair: sc.stringifyKeypair(),

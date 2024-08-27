@@ -289,10 +289,10 @@ export class MizuWallet implements AptosWallet {
         });
       }
 
-      if (response?.signature) {
+      if (response?.data) {
         return {
           args: {
-            ...response,
+            ...response?.data,
             ...rest,
           },
           status: UserResponseStatus.APPROVED,
