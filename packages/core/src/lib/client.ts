@@ -22,7 +22,7 @@ import {
 import { ORDER_STATUS } from './config/enum';
 
 export const GRAPHQL_URL: Record<'mainnet' | 'testnet', string> = {
-  testnet: 'https://hasura-wallet.groupwar.xyz/v1/graphql',
+  testnet: 'https://hasura-wallet.mizu.one/v1/graphql',
   mainnet: 'https://api.mz.xyz/v1/graphql/',
 };
 
