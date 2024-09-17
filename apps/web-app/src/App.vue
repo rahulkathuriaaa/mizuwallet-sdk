@@ -36,7 +36,7 @@
       </div>
 
       <div class="p-5 border-1 border-solid border-black rounded-4 mt-4 flex flex-col gap-4">
-        <h2>Signle Signer</h2>
+        <h2>Single Signer</h2>
         <button class="btn btn-primary" :disabled="!address" @click="submitHandler">
           Submit And Sign Transaction
         </button>
@@ -74,6 +74,7 @@
 
   const APTOS_COIN = '0x1::aptos_coin::AptosCoin';
   const network = ref('mainnet');
+
   const hashURL = computed(() =>
     hash.value ? `https://explorer.aptoslabs.com/txn/${hash.value}?network=${network.value}` : '',
   );
@@ -86,6 +87,7 @@
           ? 'dfa1794e-8412-4c9c-b28d-25ecd4c0b52f'
           : '7f3578d5-d0d1-4e05-a9a8-2b3f02e3e6f0',
       network: network.value as never,
+      manifestURL: 'https://your-manifest-url.com/manifest.json',
     }),
   ]);
 

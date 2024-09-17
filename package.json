@@ -15,7 +15,8 @@
     "dev:protocol": "pnpm core clean && pnpm protocol build --watch",
     "wallet-ui": "pnpm --filter wallet-ui",
     "dev:wallet-ui": "pnpm wallet-ui build --watch",
-    "build": "pnpm core build & pnpm protocol build & pnpm adapter build",
+    "clean": "rimraf dist",
+    "build": "pnpm clean && pnpm core build && pnpm protocol build && pnpm adapter build && mkdir dist && cpx \"packages/*/dist/**/*\" dist/",
     "format": "prettier --write .",
     "app": "pnpm --filter web-app"
   },
@@ -38,11 +39,16 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
+    "rimraf": "^6.0.1",
     "typescript-eslint": "^7.6.0"
   },
   "lint-staged": {
     "**/*.{js,ts,tsx}": [],
     "**/*": "prettier --write --ignore-unknown"
   },
-  "packageManager": "pnpm@9.3.0"
+  "packageManager": "pnpm@9.3.0",
+  "dependencies": {
+    "cpx": "^1.5.0"
+  }
 }
+
